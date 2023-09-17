@@ -1,0 +1,95 @@
+{
+  "version": 3,
+  "targets": {
+    ".NETStandard,Version=v2.1": {
+      "Microsoft.Unity.Analyzers/1.17.0": {
+        "type": "package"
+      }
+    }
+  },
+  "libraries": {
+    "Microsoft.Unity.Analyzers/1.17.0": {
+      "sha512": "yg1ThpevWnblJTCIzPw52EUzuzBHdjWT0yxpCfDgFT2ti6HLRB1ZZMoKYYx9U/egqQHL7cfHkPY5psLHCL9AoA==",
+      "type": "package",
+      "path": "microsoft.unity.analyzers/1.17.0",
+      "hasTools": true,
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "analyzers/dotnet/cs/Microsoft.Unity.Analyzers.dll",
+        "microsoft.unity.analyzers.1.17.0.nupkg.sha512",
+        "microsoft.unity.analyzers.nuspec",
+        "tools/install.ps1",
+        "tools/uninstall.ps1"
+      ]
+    }
+  },
+  "projectFileDependencyGroups": {
+    ".NETStandard,Version=v2.1": [
+      "Microsoft.Unity.Analyzers >= *"
+    ]
+  },
+  "packageFolders": {
+    "/home/andrew/.nuget/packages/": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "/home/andrew/Documents/Unity Projects/GPE340_AndrewLong/CSharpProjFolders/Assembly-CSharp/Assembly-CSharp.csproj",
+      "projectName": "Assembly-CSharp",
+      "projectPath": "/home/andrew/Documents/Unity Projects/GPE340_AndrewLong/CSharpProjFolders/Assembly-CSharp/Assembly-CSharp.csproj",
+      "packagesPath": "/home/andrew/.nuget/packages/",
+      "outputPath": "/home/andrew/Documents/Unity Projects/GPE340_AndrewLong/CSharpProjFolders/Assembly-CSharp/obj/",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "/home/andrew/.nuget/NuGet/NuGet.Config"
+      ],
+      "originalTargetFrameworks": [
+        "netstandard2.1"
+      ],
+      "sources": {
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "projectReferences": {}
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      }
+    },
+    "frameworks": {
+      "netstandard2.1": {
+        "targetAlias": "netstandard2.1",
+        "dependencies": {
+          "Microsoft.Unity.Analyzers": {
+            "include": "Runtime, Build, Native, ContentFiles, Analyzers",
+            "suppressParent": "All",
+            "target": "Package",
+            "version": "[*, )"
+          }
+        },
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "NETStandard.Library": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/6.0.122/RuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}
