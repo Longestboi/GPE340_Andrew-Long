@@ -9,6 +9,7 @@ public abstract class Controller : MonoBehaviour
     public Pawn pawn;
     
     // Abstract Methods
-    public abstract void Possess(Pawn pawn);
-    public abstract void Unpossess(Pawn pawn);
+    public abstract void Possess(Pawn pawnToPossess);
+    public abstract void Unpossess(Pawn pawnToUnpossess);
+
 }
