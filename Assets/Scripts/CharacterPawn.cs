@@ -4,20 +4,38 @@ using UnityEngine;
 
 public class CharacterPawn : Pawn
 {
-
+    /// <summary>Reference to the animator</summary>
     private Animator animator;
 
-    // MonoBehaviour
-
+    #region MonoBehaviour
     public void Start()
     {
         // Get the animator
         animator = GetComponent<Animator>();
+        animator.applyRootMotion = true;
     }
 
+    public void OnAnimatorMove()
+    {
+        // After the animation runs
+
+        // Use root motion to move the game object
+        transform.position += animator.deltaPosition;
+        transform.rotation *= animator.deltaRotation;
+
+        // If we have a NavMeshAgent on our controller,
+        AiController aiController = controller as AiController;
+        if (aiController != null)
+        {
+            // Move to the position of the NavMeshAgent, too
+            transform.position = aiController.agent.nextPosition;            
+        }
+    }
+    #endregion MonoBehaviour
+
+    #region Pawn
     public override void Move(Vector3 direction)
     {
-
         /* Transform movingDirection to make the pawn move in relation to the screen
          * and not in relation to the player.
          */
@@ -47,23 +65,7 @@ public class CharacterPawn : Pawn
         Quaternion lookRotation = Quaternion.LookRotation(vectorToLookDown);
         // Rotate a bit towards that rotation
         transform.rotation = Quaternion.RotateTowards(transform.rotation, lookRotation, roationSpeed * Time.deltaTime);
-
     }
-    public void OnAnimatorMove()
-    {
-        // After the animation runs
-
-        // Use root motion to move the game object
-        transform.position += animator.deltaPosition;
-        transform.rotation *= animator.deltaRotation;
-
-        // If we have a NavMeshAgent on our controller,
-        AiController aiController = controller as AiController;
-        if (aiController != null) {
-            // Move to the position of the NavMeshAgent, too
-            transform.position = aiController.agent.nextPosition;            
-        }
-
-    }
+    #endregion Pawn
 }
 

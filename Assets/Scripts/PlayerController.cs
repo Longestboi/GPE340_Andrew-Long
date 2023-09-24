@@ -6,11 +6,43 @@ using UnityEngine.AI;
 
 public class PlayerController : Controller
 {
+    /// <summary>Flag that controls if the mouse will be used in the rotation</summary>
     public bool isMouseRotation;
 
+    /// <summary>Reference to the main camera</summary>
     public Camera mainCamera = null;
-    public float heightAboveFloor;
 
+    /// <summary>The height that the camera should be above the pawn</summary>
+    public float heightAbovePawn;
+
+    delegate void OnInteract();
+    OnInteract interact;
+
+
+    // MonoBehaviour Functions
+    #region MonoBehaviour
+    // Start is called before the first frame update
+    void Start(){
+        interact = InteractWithButtons;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        // Do interaction
+        if (Input.GetButton("Interact")) {
+            interact();
+        }
+
+        // Do the movement and rotation code.
+        DoMoveAndRotate();
+        // Do the camera movement stuffs
+        CameraUpdate();
+    }
+    #endregion MonoBehaviour
+
+    // Base Controller functions
+    #region Controller
     public override void Possess(Pawn pawn)
     {
         // throw new System.NotImplementedException();
@@ -20,23 +52,7 @@ public class PlayerController : Controller
     {
         // throw new System.NotImplementedException();
     }
-
-    // MonoBehaviour Methods
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        // Do the movement and rotation code.
-        DoMoveAndRotate();
-
-        // Do the camera movement stuffs
-        CameraUpdate();
-    }
+    #endregion Controller
 
     void CameraUpdate()
     {
@@ -53,8 +69,8 @@ public class PlayerController : Controller
         // Smooth damp the 
         float heightBuffer = Mathf.SmoothDamp(
             mainCamera.transform.position.y,
-            pawn.transform.position.y + heightAboveFloor,
-            ref fDummyVelo, .02f
+            pawn.transform.position.y + heightAbovePawn,
+            ref fDummyVelo, 2f * Time.deltaTime
         );
 
         // Set the position of the camera in relation to the 
@@ -65,7 +81,7 @@ public class PlayerController : Controller
                 new Vector3(
                     pawn.transform.position.x,
                     heightBuffer,
-                    pawn.transform.position.z), ref vDummyVelo, 0.1f
+                    pawn.transform.position.z), ref vDummyVelo, 2f * Time.deltaTime
                 ),
             cameraRotation
         );
@@ -77,6 +93,8 @@ public class PlayerController : Controller
         Vector3 movingDirection = new Vector3(
             Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")
         );
+
+        // Debug.Log(movingDirection);
 
         // Tell pawn to move based on inputs...
         pawn.Move(movingDirection);
@@ -104,6 +122,17 @@ public class PlayerController : Controller
         {
             // Tell rotate to move based on inputs...
             pawn.Rotate(Input.GetAxis("Rotate"));
+        }
+    }
+
+    void InteractWithButtons() {
+        foreach (RaycastHit h in Physics.SphereCastAll(pawn.transform.position, 1f, pawn.transform.forward))
+        {
+            IInteractable ii = h.transform.gameObject.GetComponent<IInteractable>();
+            if (ii != null)
+            {
+                ii.OnInteraction();
+            }
         }
     }
 }

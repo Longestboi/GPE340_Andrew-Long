@@ -5,12 +5,12 @@ using UnityEngine.AI;
 
 public class AiController : Controller
 {
-
     [HideInInspector] public NavMeshAgent agent;
     public float stoppingDistance = 1;
     public Transform targetTransform;
     private Vector3 desiredVelocity = Vector3.zero;
 
+    #region Controller
     public override void Possess(Pawn pawnToPossess)
     {
         pawn = pawnToPossess;
@@ -44,11 +44,12 @@ public class AiController : Controller
         pawn = null;
         Destroy(agent);
     }
+    #endregion Controller
 
+    #region MonoBehaviour
     // Start is called before the first frame update
     void Start(){
         if (pawn != null) Possess(pawn);
-
     }
 
     // Update is called once per frame
@@ -62,4 +63,5 @@ public class AiController : Controller
 
         pawn.RotateToLookAt(targetTransform.position);
     }
+    #endregion MonoBehaviour
 }
