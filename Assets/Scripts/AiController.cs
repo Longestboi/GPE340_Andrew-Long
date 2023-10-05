@@ -1,14 +1,34 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class AiController : Controller
 {
-    [HideInInspector] public NavMeshAgent agent;
+    #region Fields
+    [HideInInspector]
+    public NavMeshAgent agent;
     public float stoppingDistance = 1;
     public Transform targetTransform;
     private Vector3 desiredVelocity = Vector3.zero;
+    #endregion Fields
+
+    #region MonoBehaviour
+    // Start is called before the first frame update
+    void Start(){
+        if (pawn != null) Possess(pawn);
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        agent.SetDestination(targetTransform.position);
+
+        desiredVelocity = agent.desiredVelocity;
+
+        pawn.Move(desiredVelocity);
+
+        pawn.RotateToLookAt(targetTransform.position);
+    }
+    #endregion MonoBehaviour
 
     #region Controller
     public override void Possess(Pawn pawnToPossess)
@@ -46,22 +66,4 @@ public class AiController : Controller
     }
     #endregion Controller
 
-    #region MonoBehaviour
-    // Start is called before the first frame update
-    void Start(){
-        if (pawn != null) Possess(pawn);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        agent.SetDestination(targetTransform.position);
-
-        desiredVelocity = agent.desiredVelocity;
-
-        pawn.Move(desiredVelocity);
-
-        pawn.RotateToLookAt(targetTransform.position);
-    }
-    #endregion MonoBehaviour
 }

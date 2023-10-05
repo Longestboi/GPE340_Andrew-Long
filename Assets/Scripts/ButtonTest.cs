@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ButtonTest : MonoBehaviour, IInteractable
@@ -14,6 +12,7 @@ public class ButtonTest : MonoBehaviour, IInteractable
     #endregion MonoBehaviour
 
     #region IInteractable
+    // Demo function to test interation thing...
     public void OnInteraction()
     {
         Destroy(gameObject);

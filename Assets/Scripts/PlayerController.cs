@@ -1,63 +1,74 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class PlayerController : Controller
 {
+    #region Fields
+    [Header("Camera data")]
+    /// <summary>Reference to the main camera</summary>
+    [SerializeField, Tooltip("Reference to the main camera")]
+    private Camera mainCamera = null;
+
     /// <summary>Flag that controls if the mouse will be used in the rotation</summary>
+    [Tooltip("Toggle if the player uses mouse controls to rotate")]
     public bool isMouseRotation;
 
-    /// <summary>Reference to the main camera</summary>
-    public Camera mainCamera = null;
-
     /// <summary>The height that the camera should be above the pawn</summary>
+    [Tooltip("The height that the camera should be above the pawn")]
     public float heightAbovePawn;
 
-    delegate void OnInteract();
-    OnInteract interact;
+    /// <summary>Delagate that will execute when the interation button is pressed</summary>
+    private IInteractable.OnInteract interact;
+    #endregion
 
-
-    // MonoBehaviour Functions
     #region MonoBehaviour
     // Start is called before the first frame update
-    void Start(){
+    void Start()
+    {
+        // Set delagate functions
         interact = InteractWithButtons;
+        
+        // Set the position of the camera
+        if (mainCamera != null && pawn != null)
+        {
+            mainCamera.transform.GetPositionAndRotation(out _, out Quaternion cameraRotation);
+
+            mainCamera.transform.SetPositionAndRotation(
+                new Vector3(
+                    pawn.transform.position.x, heightAbovePawn,
+                    pawn.transform.position.z
+                ),
+                cameraRotation
+            );
+        };
     }
 
     // Update is called once per frame
     void Update()
     {
         // Do interaction
-        if (Input.GetButton("Interact")) {
-            interact();
-        }
+        if (Input.GetButton("Interact")) interact();
 
         // Do the movement and rotation code.
         DoMoveAndRotate();
         // Do the camera movement stuffs
         CameraUpdate();
+
+        DoWeaponTrigger();
     }
     #endregion MonoBehaviour
 
-    // Base Controller functions
     #region Controller
-    public override void Possess(Pawn pawn)
-    {
-        // throw new System.NotImplementedException();
-    }
+    // Base Controller functions
+    public override void Possess(Pawn pawn){}
 
-    public override void Unpossess(Pawn pawn)
-    {
-        // throw new System.NotImplementedException();
-    }
+    public override void Unpossess(Pawn pawn){}
     #endregion Controller
 
-    void CameraUpdate()
+    #region PlayerController
+    private void CameraUpdate()
     {
         // Stop camera update from running if there is no camera attached...
-        if (mainCamera == null) { return; }
+        if (mainCamera == null) return;
         
         // Get the camera rotation so we don't discard it
         mainCamera.transform.GetPositionAndRotation(out _, out Quaternion cameraRotation);
@@ -66,7 +77,7 @@ public class PlayerController : Controller
         float fDummyVelo = 0.0f;
         Vector3 vDummyVelo = new Vector3();
 
-        // Smooth damp the 
+        // Smooth damp the camera height
         float heightBuffer = Mathf.SmoothDamp(
             mainCamera.transform.position.y,
             pawn.transform.position.y + heightAbovePawn,
@@ -81,20 +92,20 @@ public class PlayerController : Controller
                 new Vector3(
                     pawn.transform.position.x,
                     heightBuffer,
-                    pawn.transform.position.z), ref vDummyVelo, 2f * Time.deltaTime
+                    pawn.transform.position.z
                 ),
+                ref vDummyVelo, 2f * Time.deltaTime
+            ),
             cameraRotation
         );
     }
 
-    void DoMoveAndRotate()
+    private void DoMoveAndRotate()
     {
         // Get the direction to move in
         Vector3 movingDirection = new Vector3(
             Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")
         );
-
-        // Debug.Log(movingDirection);
 
         // Tell pawn to move based on inputs...
         pawn.Move(movingDirection);
@@ -103,8 +114,6 @@ public class PlayerController : Controller
         {
             Vector3 pointToLookAt;
 
-            // Finding the point
-            
             // Create a plane at the feet of the pawn
             Plane thePlane = new Plane(Vector3.up, pawn.transform.position);
             
@@ -125,14 +134,37 @@ public class PlayerController : Controller
         }
     }
 
-    void InteractWithButtons() {
+    private void InteractWithButtons() {
         foreach (RaycastHit h in Physics.SphereCastAll(pawn.transform.position, 1f, pawn.transform.forward))
         {
+            // Get the interactor if object has one
             IInteractable ii = h.transform.gameObject.GetComponent<IInteractable>();
-            if (ii != null)
-            {
-                ii.OnInteraction();
-            }
+            
+            // Do the interaction event if there is one
+            if (ii != null) ii.OnInteraction();
         }
     }
+
+    private void DoWeaponTrigger() {
+        if (pawn.weapon == null) return;
+
+        if(Input.GetButtonDown("Fire1"))
+        {
+            pawn.weapon.OnTriggerPull.Invoke();
+        }
+        else if (Input.GetButton("Fire1"))
+        {
+            pawn.weapon.OnTriggerHold.Invoke();
+        }
+        else if (Input.GetButtonUp("Fire1"))
+        {
+            pawn.weapon.OnTriggerRelease.Invoke();
+        }
+        else
+        {
+            pawn.weapon.OnTriggerIdle.Invoke();
+        }
+    }
+
+    #endregion PlayerController
 }

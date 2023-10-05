@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
 public class CharacterPawn : Pawn
 {
     /// <summary>Reference to the animator</summary>
@@ -17,8 +18,6 @@ public class CharacterPawn : Pawn
 
     public void OnAnimatorMove()
     {
-        // After the animation runs
-
         // Use root motion to move the game object
         transform.position += animator.deltaPosition;
         transform.rotation *= animator.deltaRotation;
