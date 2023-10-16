@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Projectile : MonoBehaviour
@@ -7,11 +5,14 @@ public abstract class Projectile : MonoBehaviour
     #region Fields
     /// <summary>Movement speed of the projectile</summary>
     public float speed;
-    /// <summary>Damage delt by the projectile</summary>
-    public float damageDone;
+    
+    [HideInInspector]
+    // The thing that shot this projectile
+    public Controller instigator;
+    
     [HideInInspector]
     /// <summary>The owner of this projectile</summary>
-    public Controller owner;
+    public Shooter owner;
     #endregion Fields
 
     #region Projectile

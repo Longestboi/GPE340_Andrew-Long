@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -9,24 +10,34 @@ public class AiController : Controller
     public float stoppingDistance = 1;
     public Transform targetTransform;
     private Vector3 desiredVelocity = Vector3.zero;
+
+    public float respawnTimer;
+
+    public Transform respawnLocation;
+
+    public Pawn aiPawnPrefab;
+
+    private Coroutine respawnRoutine;
     #endregion Fields
 
     #region MonoBehaviour
     // Start is called before the first frame update
     void Start(){
-        if (pawn != null) Possess(pawn);
+        if (pawn) Possess(pawn);
     }
 
     // Update is called once per frame
     void Update()
     {
-        agent.SetDestination(targetTransform.position);
+        if (respawnRoutine == null && !pawn)
+        {
+            respawnRoutine = StartCoroutine(Respawn());
+        }
 
-        desiredVelocity = agent.desiredVelocity;
+        if (!pawn || !agent) return;
 
-        pawn.Move(desiredVelocity);
-
-        pawn.RotateToLookAt(targetTransform.position);
+        // Seek if the targetTransform exists.
+        if (targetTransform) DoSeek();
     }
     #endregion MonoBehaviour
 
@@ -35,11 +46,15 @@ public class AiController : Controller
     {
         pawn = pawnToPossess;
 
+        // Set the controller of the pawn to us...
+        pawn.controller = GetComponent<Controller>();
+
         // Get NavMeshAgent from pawn.
         agent = pawn.GetComponent<NavMeshAgent>();
 
         // Add agent if there is none
-        if (agent == null) {
+        if (!agent)
+        {
             agent = pawn.gameObject.AddComponent<NavMeshAgent>();
         }
 
@@ -60,10 +75,46 @@ public class AiController : Controller
 
     public override void Unpossess(Pawn pawnToUnpossess)
     {
-        pawn.GetComponent<Rigidbody>().isKinematic = false;
-        pawn = null;
+        if (pawn)
+        {
+            pawn.GetComponent<Rigidbody>().isKinematic = false;
+            // pawn.controller = null;
+            pawn = null;
+        }
+        
         Destroy(agent);
     }
     #endregion Controller
 
+    #region AiController
+
+    void DoSeek()
+    {
+        if (!agent.isOnNavMesh) return;
+        agent.SetDestination(targetTransform.position);
+
+        desiredVelocity = agent.desiredVelocity;
+
+        pawn.Move(desiredVelocity);
+
+        pawn.RotateToLookAt(targetTransform.position);
+    }
+
+    IEnumerator Respawn()
+    {
+        while(true)
+        {
+            if (pawn) yield return null; 
+            // Wait for the respawn timer
+            yield return new WaitForSecondsRealtime(respawnTimer);
+            
+            Possess(Instantiate(aiPawnPrefab, respawnLocation));
+
+            StopCoroutine(respawnRoutine);
+            respawnRoutine = null;
+            yield break;
+        }
+        
+    }
+    #endregion AiController
 }

@@ -28,7 +28,7 @@ public class PlayerController : Controller
         interact = InteractWithButtons;
         
         // Set the position of the camera
-        if (mainCamera != null && pawn != null)
+        if (mainCamera && pawn)
         {
             mainCamera.transform.GetPositionAndRotation(out _, out Quaternion cameraRotation);
 
@@ -45,6 +45,9 @@ public class PlayerController : Controller
     // Update is called once per frame
     void Update()
     {
+        // Do nothing when we aren't possessing a pawn.
+        if (!pawn) return;
+
         // Do interaction
         if (Input.GetButton("Interact")) interact();
 
@@ -68,7 +71,7 @@ public class PlayerController : Controller
     private void CameraUpdate()
     {
         // Stop camera update from running if there is no camera attached...
-        if (mainCamera == null) return;
+        if (!mainCamera) return;
         
         // Get the camera rotation so we don't discard it
         mainCamera.transform.GetPositionAndRotation(out _, out Quaternion cameraRotation);
@@ -134,7 +137,8 @@ public class PlayerController : Controller
         }
     }
 
-    private void InteractWithButtons() {
+    private void InteractWithButtons()
+    {
         foreach (RaycastHit h in Physics.SphereCastAll(pawn.transform.position, 1f, pawn.transform.forward))
         {
             // Get the interactor if object has one
@@ -145,7 +149,8 @@ public class PlayerController : Controller
         }
     }
 
-    private void DoWeaponTrigger() {
+    private void DoWeaponTrigger()
+    {
         if (pawn.weapon == null) return;
 
         if(Input.GetButtonDown("Fire1"))

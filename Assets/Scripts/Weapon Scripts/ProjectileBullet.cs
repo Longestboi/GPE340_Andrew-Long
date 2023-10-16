@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -31,14 +30,21 @@ public class ProjectileBullet : Projectile
         Move();
     }
 
-    private void OnTriggerEnter(Collider other) {
-        // TODO: hurt player on collision
+    private void OnTriggerEnter(Collider other)
+    {
+        Health health = other.GetComponent<Health>();
+        if (!health) return;
+
+        health.Damage(owner.damageAmount);
+
+        // Destroy Self after damaging
         Destroy(gameObject);
     }
     #endregion MonoBehaviour
 
     #region Projectile
-    public override void Move() {
+    public override void Move()
+    {
         // Move the projectile forward at speed
         rb.MovePosition(rb.position + (transform.forward * speed * Time.deltaTime));
     }
@@ -50,7 +56,7 @@ public class ProjectileBullet : Projectile
     IEnumerator KillAfterSeconds(float time)
     {
         // Wait
-        yield return new WaitForSeconds(time);
+        yield return new WaitForSecondsRealtime(time);
     
         // Kill
         Destroy(gameObject);

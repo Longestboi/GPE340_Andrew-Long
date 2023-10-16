@@ -1,7 +1,16 @@
-﻿{
+{
 	"folders": [
 		{
 			"path": "."
 		}
-	]
+	],
+	"settings": {
+		"[choicescript]": {
+			"editor.quickSuggestions": {
+				"comments": false,
+				"strings": false,
+				"other": false
+			}
+		}
+	}
 }

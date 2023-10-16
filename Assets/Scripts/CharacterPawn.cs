@@ -1,12 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(Animator), typeof(Health))]
 public class CharacterPawn : Pawn
 {
+    #region Fields
     /// <summary>Reference to the animator</summary>
     private Animator animator;
+
+    public bool canMove = true;
+    #endregion Fields
 
     #region MonoBehaviour
     public void Start()
@@ -18,16 +20,17 @@ public class CharacterPawn : Pawn
 
     public void OnAnimatorMove()
     {
+        if (!animator || !canMove) return;
         // Use root motion to move the game object
         transform.position += animator.deltaPosition;
         transform.rotation *= animator.deltaRotation;
 
         // If we have a NavMeshAgent on our controller,
         AiController aiController = controller as AiController;
-        if (aiController != null)
+        if (aiController && aiController.agent)
         {
             // Move to the position of the NavMeshAgent, too
-            transform.position = aiController.agent.nextPosition;            
+            transform.position = aiController.agent.nextPosition;
         }
     }
     #endregion MonoBehaviour
@@ -52,12 +55,14 @@ public class CharacterPawn : Pawn
     }
 
     public override void Rotate(float direction)
-    { 
+    {
+        if (!canMove) return;
         transform.Rotate(0, direction * roationSpeed * Time.deltaTime, 0);
     }
 
     public override void RotateToLookAt(Vector3 position)
     {
+        if (!canMove) return;
         // Find the vector from self to target.
         Vector3 vectorToLookDown = position - transform.position;
         // Find the rotation we would need to look down that vector
