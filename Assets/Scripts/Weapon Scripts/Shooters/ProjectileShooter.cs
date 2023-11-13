@@ -16,10 +16,12 @@ public class ProjectileShooter : Shooter
         if (!owner || !owner.firePosition) return;
 
         // Gen the projectile at fireposition
-        Projectile proj = Instantiate<Projectile>(
+        Projectile proj = Instantiate(
             projectilePrefab, owner.firePosition.position,
             owner.firePosition.rotation
         );
+
+        proj.transform.Rotate(0, owner.GetNextShotAccuracy(), 0);
 
         // Set the owner of this projectile
         proj.owner = GetComponent<Shooter>();

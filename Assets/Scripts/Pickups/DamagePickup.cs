@@ -1,4 +1,5 @@
 using UnityEngine;
+using Utils;
 
 public class DamagePickup : Pickup
 {   
@@ -12,7 +13,9 @@ public class DamagePickup : Pickup
     void OnTriggerEnter(Collider other)
     {
         // Environmental story telling 
-        Controller controller = isPlayerExclusive ? GetPlayerController(other) : GetController(other);
+        Controller controller = isPlayerExclusive ?
+            ControllerUTE.GetPlayerController(other.gameObject) :
+            ControllerUTE.GetController(other.gameObject);
         Health pHealth;
         if (!controller || !controller.pawn) return;
         

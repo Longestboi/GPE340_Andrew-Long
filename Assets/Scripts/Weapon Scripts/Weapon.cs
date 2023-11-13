@@ -30,6 +30,14 @@ public class Weapon : MonoBehaviour
 
     /// <summary>The owner of this weapon component</summary>
     public Controller owner;
+
+    public Transform LHandPoint;
+    public Transform RHandPoint;
+
+    [Range(0, 100)]
+    public float weaponAccuracy;
+    private float maxWeaponAccuracy = 100;
+    public float maxWeaponRotationOffset;
     #endregion Fields
 
     #region MonoBehaviour
@@ -41,4 +49,27 @@ public class Weapon : MonoBehaviour
         owner = pawn.controller;
     }
     #endregion MonoBehaviour
+
+    #region Weapon
+
+    public float GetNextShotAccuracy()
+    {
+        // Get the accuracy percentage 
+        float accuracyPercentage = 1 - (weaponAccuracy / maxWeaponAccuracy);
+
+        float ownerAccuracy = 1 - (owner.accuracy / 100);
+
+        // Get the roation from the accuracy percentage
+        float maxRotationOffset = maxWeaponRotationOffset * accuracyPercentage * ownerAccuracy;
+        
+        // Randomize the rotation
+        float accuracyRotationOffset = maxRotationOffset * Random.value;
+        
+        // accuracyRotationOffset -= accuracyRotationOffset / 2;
+
+        // Randomize the direction of the rotation
+        return (Random.value <= .5f) ? accuracyRotationOffset : -accuracyRotationOffset;
+    }
+
+    #endregion Weapon
 }

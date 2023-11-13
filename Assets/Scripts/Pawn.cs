@@ -14,6 +14,8 @@ public abstract class Pawn : MonoBehaviour
 
     /// <summary>The weapon the pawn currently has</summary>
     public Weapon weapon;
+    
+    public bool isDead = false;
     #endregion Fields
 
     #region Pawn

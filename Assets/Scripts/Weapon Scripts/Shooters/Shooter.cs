@@ -62,5 +62,9 @@ public abstract class Shooter : MonoBehaviour
             yield return new WaitForSecondsRealtime(1f / fireRate);
         }
     }
+
+    public bool IsShooting() {
+        return isShooting;
+    }
     #endregion Shooter
 }

@@ -105,6 +105,8 @@ public class PlayerController : Controller
 
     private void DoMoveAndRotate()
     {
+        // if (!(pawn as CharacterPawn).canBeControlled) return;
+
         // Get the direction to move in
         Vector3 movingDirection = new Vector3(
             Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")

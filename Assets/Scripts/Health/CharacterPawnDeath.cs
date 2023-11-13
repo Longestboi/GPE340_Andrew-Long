@@ -20,7 +20,7 @@ public class CharacterPawnDeath : Death
         Animator animator = GetComponent<Animator>();
 
         // Stop the pawn from moving
-        pawn.canMove = false;
+        pawn.isDead = true;
         // Set the animator to dead so the death animation plays
         animator.SetBool("isDead", true);
     }

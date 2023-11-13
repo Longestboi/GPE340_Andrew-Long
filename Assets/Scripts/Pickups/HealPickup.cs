@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using Utils;
 public class HealthPickup : Pickup
 {   
     #region Fields
@@ -11,7 +11,7 @@ public class HealthPickup : Pickup
     #region MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
-        Controller controller = isPlayerExclusive ? GetPlayerController(other) : GetController(other);
+        Controller controller = isPlayerExclusive ? ControllerUTE.GetPlayerController(other.gameObject) : ControllerUTE.GetController(other.gameObject);
         Health pHealth;
         if (!controller || !controller.pawn) return;
         

@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.TextCore.Text;
 
 public class AiController : Controller
 {
@@ -17,7 +18,7 @@ public class AiController : Controller
 
     public Pawn aiPawnPrefab;
 
-    private Coroutine respawnRoutine;
+    public float shootingDistance = 3.5f;
     #endregion Fields
 
     #region MonoBehaviour
@@ -29,15 +30,20 @@ public class AiController : Controller
     // Update is called once per frame
     void Update()
     {
-        if (respawnRoutine == null && !pawn)
-        {
-            respawnRoutine = StartCoroutine(Respawn());
-        }
 
-        if (!pawn || !agent) return;
+        if (!pawn || !agent || !targetTransform) return;
 
         // Seek if the targetTransform exists.
         if (targetTransform) DoSeek();
+        
+        float distanceBetweenAiAndPlayer = Vector3.Distance(
+            pawn.transform.position, targetTransform.position
+        );
+
+        if (distanceBetweenAiAndPlayer < shootingDistance && !pawn.isDead)
+            DoShooting(true);
+        else
+            DoShooting(false);
     }
     #endregion MonoBehaviour
 
@@ -100,21 +106,28 @@ public class AiController : Controller
         pawn.RotateToLookAt(targetTransform.position);
     }
 
-    IEnumerator Respawn()
+    public void DoShooting(bool isShooting)
     {
-        while(true)
-        {
-            if (pawn) yield return null; 
-            // Wait for the respawn timer
-            yield return new WaitForSecondsRealtime(respawnTimer);
-            
-            Possess(Instantiate(aiPawnPrefab, respawnLocation));
+        if (!pawn.weapon) return;
+        var player = targetTransform.gameObject.GetComponent<CharacterPawn>();
 
-            StopCoroutine(respawnRoutine);
-            respawnRoutine = null;
-            yield break;
+        if (player.isDead)
+        {
+            if (pawn.weapon.GetComponent<Shooter>().IsShooting())
+                pawn.weapon.OnTriggerRelease.Invoke();
+            return;
         }
-        
+        // Debug.Log(test.name + ":e:" + test.canBeControlled);
+
+        if (isShooting)
+            pawn.weapon.OnTriggerPull.Invoke();
+        else
+            pawn.weapon.OnTriggerRelease.Invoke();
+    }
+
+    public void EquipWeaponFromPrefab()
+    {
+
     }
     #endregion AiController
 }

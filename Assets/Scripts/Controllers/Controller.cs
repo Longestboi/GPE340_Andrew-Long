@@ -7,6 +7,9 @@ public abstract class Controller : MonoBehaviour
     /// <summary>The pawn that will be controlled by this controller</summary>
     [Header("Controller Base Class:"), Tooltip("The pawn that will be controlled by this controller")]
     public Pawn pawn;
+
+    [Range(0, 100)]
+    public float accuracy = 100;
     #endregion Fields
     
     #region Controller
