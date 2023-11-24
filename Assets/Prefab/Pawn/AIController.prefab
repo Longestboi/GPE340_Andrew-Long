@@ -52,4 +52,4 @@ MonoBehaviour:
   respawnTimer: 1
   respawnLocation: {fileID: 0}
   aiPawnPrefab: {fileID: 7660286749725156930, guid: 352ab4330d5d9dd32ae0af48d080ca3c, type: 3}
-  shootingDistance: 20
+  shootingDistance: 2.5

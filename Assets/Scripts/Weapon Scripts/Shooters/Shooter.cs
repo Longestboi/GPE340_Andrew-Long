@@ -63,7 +63,8 @@ public abstract class Shooter : MonoBehaviour
         }
     }
 
-    public bool IsShooting() {
+    public bool IsShooting()
+    {
         return isShooting;
     }
     #endregion Shooter

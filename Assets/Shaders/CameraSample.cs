@@ -17,7 +17,8 @@ public class CVDAccessiblitySample : MonoBehaviour
     public float intensity;
     private Material material;
 
-    void Awake() {
+    void Awake()
+    {
         material = new Material(Shader.Find("Custom/CVD"));
     }
 

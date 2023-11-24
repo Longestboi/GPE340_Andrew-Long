@@ -16,7 +16,8 @@ public class ParticleShooter : Shooter
         part = GetComponent<ParticleSystem>();
     }
 
-    void OnParticleCollision(GameObject other) {
+    void OnParticleCollision(GameObject other)
+    {
         Controller controller = ControllerUTE.GetController(other.gameObject);
         Health pHealth;
         if (!controller || !controller.pawn) return;

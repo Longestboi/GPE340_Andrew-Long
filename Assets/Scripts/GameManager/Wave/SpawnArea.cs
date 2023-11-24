@@ -19,6 +19,7 @@ public class SpawnArea : MonoBehaviour
     {
         Gizmos.color = Color.blue;
         Gizmos.DrawWireCube(transform.position, spawnArea);
+        // Blue with half alpha
         Gizmos.color = new Color(0, 0, 1, .5f);
         Gizmos.DrawCube(transform.position, spawnArea);
     }

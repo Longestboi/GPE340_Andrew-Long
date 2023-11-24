@@ -24,6 +24,8 @@ public class WaveData
     #endregion Fields
 
     #region WaveData
+    /// <summary>Check to see if the current wave is complete</summary>
+    /// <returns>Whether the wave has been completed</returns>
     public bool IsWaveCompleted()
     {
         // Filter list of enemies if they're dead,
@@ -31,7 +33,9 @@ public class WaveData
         return enemies.Where(x => x.isDead == false).Count() == 0;
     }
 
-    public void InitAllotedEnemies(Transform position)
+    /// <summary>Init an enemy until the enemy limit is hit</summary>
+    /// <param name="position">The position that enemies will spawn</param>
+    public void InitEnemiesUntilLimit(Transform position)
     {
         if (numSpawnedEnemies == currentSpawnedEnemyLimit) return;
         var f = enemies.FirstOrDefault(x => !x.isInstanced);
@@ -40,9 +44,11 @@ public class WaveData
         f.Construct(position, waveManager.gameManager.playerController.pawn.transform);
     }
 
-    // Possibly one of the worst ways of doing this, but LINQ!!1
+    /// <summary>Update enemy data like death and initialization stuff</summary>
     public void UpdateEnemies()
     {
+        // Possibly one of the worst ways of doing this, but LINQ!!1
+
         // Destroy the enemy if it's dead
         Predicate<EnemyData> OnRemove = (EnemyData ed) => {
             bool shouldDie = ed.isDead && ed.isInstanced;
@@ -53,9 +59,11 @@ public class WaveData
             return shouldDie;
         };
 
+        // Count the current number of enemies
         numSpawnedEnemies = enemies.Count(x => x.isInstanced);
         // Determine if the enemy is dead
         enemies.ForEach(ed => ed.isDead = ed.enemy == null && ed.isInstanced);
+        // Remove the enemy if it's dead and initialized
         numSpawnedEnemies -= enemies.RemoveAll(OnRemove);
     }
     #endregion WaveData

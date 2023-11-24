@@ -4,10 +4,11 @@ using UnityEngine;
 public class Death : MonoBehaviour
 {
     #region MonoBehaviour
-    void Start() {
+    public virtual void Start()
+    {
         Health health = GetComponent<Health>();
 
-        health.onDie.AddListener(OnDie);   
+        health.onDieOnce.AddListener(OnDie);   
     }
     #endregion MonoBehaviour
     

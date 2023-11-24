@@ -34,8 +34,8 @@ public class CharacterPawn : Pawn
         }
     }
 
-    public void OnAnimatorIK(int layerIndex) {
-
+    public void OnAnimatorIK(int layerIndex)
+    {
         // If no weapon exists, set weights to zero
         if (!weapon) {
             animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 0.0f);
@@ -69,7 +69,7 @@ public class CharacterPawn : Pawn
     #region Pawn
     public override void Move(Vector3 direction)
     {
-        if (isDead) return;
+        if (isDead || !animator) return;
         /* Transform movingDirection to make the pawn move in relation to the screen
          * and not in relation to the player.
          */

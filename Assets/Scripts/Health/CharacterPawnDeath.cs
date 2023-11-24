@@ -5,7 +5,7 @@ public class CharacterPawnDeath : Death
 {
     
     #region MonoBehaviour
-    public void Start()
+    public override void Start()
     {
         Health health = GetComponent<Health>();
 

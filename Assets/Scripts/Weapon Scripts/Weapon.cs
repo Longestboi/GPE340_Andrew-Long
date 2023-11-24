@@ -24,6 +24,8 @@ public class Weapon : MonoBehaviour
     #endregion WeaponEvents
 
     #region Fields
+
+    public WeaponType weaponType = WeaponType.None;
     [Tooltip("The position that things shoot out from")]
     /// <summary>The position that the things shoot out from</summary>
     public Transform firePosition;
@@ -41,7 +43,8 @@ public class Weapon : MonoBehaviour
     #endregion Fields
 
     #region MonoBehaviour
-    void Start() {
+    void Start()
+    {
         Pawn pawn = transform.parent.GetComponent<Pawn>();
         if (!pawn) return;
 

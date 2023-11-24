@@ -11,8 +11,12 @@ public class Health : MonoBehaviour
     public UnityEvent onHeal;
     [SerializeField, Tooltip("Executed everytime the component is damaged")]
     public UnityEvent onDamage;
-    [SerializeField, Tooltip("Executed everytime the component is killed")]
+    [SerializeField, Tooltip("Executed when the component is killed on every update")]
     public UnityEvent onDie;
+    [SerializeField, Tooltip("Executed when the component is killed once")]
+    public UnityEvent onDieOnce;
+    
+    private bool _hasDied;
     #endregion HealEvents
     
     #region Fields
@@ -43,6 +47,12 @@ public class Health : MonoBehaviour
     {
         // If health is 0 or below, invoke the death
         if(health <= 0) onDie.Invoke();
+
+        if (health <= 0 && !_hasDied)
+        {
+            onDieOnce.Invoke();
+            _hasDied = true;
+        }
 
         // Do exponential decay when capable
         if(health > baseHealth && healthDec == null)

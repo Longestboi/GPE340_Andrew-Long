@@ -16,17 +16,24 @@ public class PlayerController : Controller
     [Tooltip("The height that the camera should be above the pawn")]
     public float heightAbovePawn;
 
-    /// <summary>Delagate that will execute when the interation button is pressed</summary>
-    private IInteractable.OnInteract interact;
+    public GameObject playerPrefab;
+
+    /// <summary>Number of lives that the player has</summary>
+    public int lives = 3;
+
+    public Transform playerRespawnPoint;
+
+    private bool _needsRespawn = false;
     #endregion
 
     #region MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // Set delagate functions
-        interact = InteractWithButtons;
-        
+        if (pawn) { 
+            Possess(pawn);
+        }
+
         // Set the position of the camera
         if (mainCamera && pawn)
         {
@@ -45,11 +52,9 @@ public class PlayerController : Controller
     // Update is called once per frame
     void Update()
     {
+        DoPlayerRespawn();
         // Do nothing when we aren't possessing a pawn.
-        if (!pawn) return;
-
-        // Do interaction
-        if (Input.GetButton("Interact")) interact();
+        if (!pawn || pawn.isDead) return;
 
         // Do the movement and rotation code.
         DoMoveAndRotate();
@@ -62,7 +67,19 @@ public class PlayerController : Controller
 
     #region Controller
     // Base Controller functions
-    public override void Possess(Pawn pawn){}
+    public override void Possess(Pawn pawnToPossess){
+        pawn = pawnToPossess;
+
+        // Set the controller of the pawn to us...
+        pawn.controller = GetComponent<Controller>();
+
+        pawn.weapon.owner = this;
+        
+        // Make sure the rigidbody does not change our position, only use root motion and the agent
+        pawn.GetComponent<Rigidbody>().isKinematic = true;
+
+        pawn.GetComponent<Health>().onDieOnce.AddListener(DecrementLife);
+    }
 
     public override void Unpossess(Pawn pawn){}
     #endregion Controller
@@ -104,9 +121,7 @@ public class PlayerController : Controller
     }
 
     private void DoMoveAndRotate()
-    {
-        // if (!(pawn as CharacterPawn).canBeControlled) return;
-
+    {        
         // Get the direction to move in
         Vector3 movingDirection = new Vector3(
             Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")
@@ -139,38 +154,34 @@ public class PlayerController : Controller
         }
     }
 
-    private void InteractWithButtons()
+    private void DoWeaponTrigger()
     {
-        foreach (RaycastHit h in Physics.SphereCastAll(pawn.transform.position, 1f, pawn.transform.forward))
+        if (pawn.weapon == null || Time.timeScale == 0) return;
+
+        if(Input.GetButtonDown("Fire1"))
+            pawn.weapon.OnTriggerPull.Invoke();
+        else if (Input.GetButton("Fire1"))
+            pawn.weapon.OnTriggerHold.Invoke();
+        else if (Input.GetButtonUp("Fire1"))
+            pawn.weapon.OnTriggerRelease.Invoke();
+        else
+            pawn.weapon.OnTriggerIdle.Invoke();
+    }
+
+    public void DoPlayerRespawn()
+    {
+        if (_needsRespawn && !pawn)
         {
-            // Get the interactor if object has one
-            IInteractable ii = h.transform.gameObject.GetComponent<IInteractable>();
-            
-            // Do the interaction event if there is one
-            if (ii != null) ii.OnInteraction();
+            pawn = Instantiate(playerPrefab.GetComponent<Pawn>(), playerRespawnPoint);
+            Possess(pawn);
+            _needsRespawn = false;
         }
     }
 
-    private void DoWeaponTrigger()
+    public void DecrementLife()
     {
-        if (pawn.weapon == null) return;
-
-        if(Input.GetButtonDown("Fire1"))
-        {
-            pawn.weapon.OnTriggerPull.Invoke();
-        }
-        else if (Input.GetButton("Fire1"))
-        {
-            pawn.weapon.OnTriggerHold.Invoke();
-        }
-        else if (Input.GetButtonUp("Fire1"))
-        {
-            pawn.weapon.OnTriggerRelease.Invoke();
-        }
-        else
-        {
-            pawn.weapon.OnTriggerIdle.Invoke();
-        }
+        lives--;
+        _needsRespawn = true;
     }
 
     #endregion PlayerController
