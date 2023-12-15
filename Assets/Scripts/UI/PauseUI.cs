@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PauseUI : MonoBehaviour
@@ -14,6 +15,10 @@ public class PauseUI : MonoBehaviour
     /// <summary>The pause manager so we can pause</summary>
     public PauseManager pauseManager;
 
+    public Object optionsUIPrefab;
+
+    private PlayerUI playerUI;
+
     #endregion Fields
 
     #region MonoBehaviour
@@ -26,6 +31,7 @@ public class PauseUI : MonoBehaviour
         options.onClick.AddListener(SpawnOptions);
         exit.onClick.AddListener(DoExit);
 
+        playerUI = FindAnyObjectByType<PlayerUI>();
         // Disable PauseUI to not immedately activate the pause menu on load
         gameObject.SetActive(false);
     }
@@ -34,6 +40,8 @@ public class PauseUI : MonoBehaviour
     {
         // Stop if pause manager isn't a thing
         if (!pauseManager) return;
+
+        playerUI.gameObject.SetActive(false);
         
         // Pause the game
         pauseManager.pause = true;
@@ -41,11 +49,13 @@ public class PauseUI : MonoBehaviour
 
     void OnDisable()
     {
+        playerUI.gameObject.SetActive(true);
         Unpause();
     }
 
     void OnDestroy()
     {
+        playerUI.gameObject.SetActive(true);
         Unpause();
     }
     #endregion MonoBehaviour
@@ -56,19 +66,19 @@ public class PauseUI : MonoBehaviour
         if (!pauseManager) return;
         // Unpause the game
         pauseManager.pause = false;
-        
+
         // Deactivate the PauseUI
         gameObject.SetActive(false);
     }
 
     public void SpawnOptions()
     {
-        Debug.Log(name + " TODO: implement the settings screen");
+        Instantiate(optionsUIPrefab, transform);
     }
 
     public void DoExit()
     {
-        pauseManager.gameManager.ExitGame();
+        SceneManager.LoadScene("Scenes/Main Menu", LoadSceneMode.Single);
     }
     #endregion PauseUI
 }

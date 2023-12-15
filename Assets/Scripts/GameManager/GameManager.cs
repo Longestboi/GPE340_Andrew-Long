@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager instance;
 
     public WaveManager waveManager;
     public PauseManager pauseManager;
@@ -13,9 +15,16 @@ public class GameManager : MonoBehaviour
     private List<WeaponIconStruct> _weaponIcons;
     public Dictionary<WeaponType, Sprite> WeaponIcons = new Dictionary<WeaponType, Sprite>();
 
+    public bool hasWon;
+
+    public Object winScreen;
+
     // Start is called before the first frame update
     void Start()
     {
+        if (instance) DestroyImmediate(gameObject);
+        else instance = this;
+
         // Get Submanagers
         pauseManager = GetComponentInChildren<PauseManager>();
         waveManager = GetComponentInChildren<WaveManager>();
@@ -33,24 +42,28 @@ public class GameManager : MonoBehaviour
 
         foreach (WeaponIconStruct wis in _weaponIcons)
             WeaponIcons.Add(wis.weaponType, wis.image);
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (playerController.lives <= 0 && !playerController.pawn) {
+        if (
+            waveManager.currentWave == waveManager.waves.Count - 1 &&
+            waveManager.waves[waveManager.currentWave].enemies.Count == 0 &&
+            !hasWon
+            )
+        {
+            Instantiate(winScreen, GetComponentInChildren<Canvas>().transform);
+            playerController.Unpossess(playerController.pawn);
+            hasWon = true;
+        }
+        
+
+        if (playerController.lives <= 0 && !playerController.pawn && !hasWon) {
             Debug.Log("Game Over!");
             
-            ExitGame();
+            Util.ExitGame();
         }
-    }
-
-    public void ExitGame()
-    {
-        #if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-        #endif
-        
-        Application.Quit(0);
     }
 }

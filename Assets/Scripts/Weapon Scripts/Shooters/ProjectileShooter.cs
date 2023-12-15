@@ -15,6 +15,9 @@ public class ProjectileShooter : Shooter
         // Null gaurd clause
         if (!owner || !owner.firePosition) return;
 
+        owner.GetComponentInChildren<AudioSource>().Play();
+        owner.GetComponentInChildren<ParticleSystem>().Play();
+
         // Gen the projectile at fireposition
         Projectile proj = Instantiate(
             projectilePrefab, owner.firePosition.position,

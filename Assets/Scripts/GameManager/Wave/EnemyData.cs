@@ -45,5 +45,6 @@ public class EnemyData
         // Make the Ai controller possess the pawn
         aiController.Possess(enemy.GetComponent<Pawn>());
         aiController.targetTransform = target;
+        
     }
 }

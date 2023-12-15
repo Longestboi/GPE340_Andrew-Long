@@ -41,6 +41,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -3374688894382140975, guid: 5927ec4db352132f4b2aa080c55924da, type: 3}
+      propertyPath: OnTriggerRelease.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -3374688894382140975, guid: 5927ec4db352132f4b2aa080c55924da, type: 3}
       propertyPath: OnTriggerPull.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
@@ -48,6 +52,10 @@ PrefabInstance:
       propertyPath: OnTriggerRelease.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 3478837090347485880}
+    - target: {fileID: -3374688894382140975, guid: 5927ec4db352132f4b2aa080c55924da, type: 3}
+      propertyPath: OnTriggerRelease.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 7075103866753471039}
     - target: {fileID: -3374688894382140975, guid: 5927ec4db352132f4b2aa080c55924da, type: 3}
       propertyPath: OnTriggerPull.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: Shoot
@@ -57,8 +65,16 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -3374688894382140975, guid: 5927ec4db352132f4b2aa080c55924da, type: 3}
+      propertyPath: OnTriggerRelease.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -3374688894382140975, guid: 5927ec4db352132f4b2aa080c55924da, type: 3}
       propertyPath: OnTriggerRelease.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: Shoot
+      objectReference: {fileID: 0}
+    - target: {fileID: -3374688894382140975, guid: 5927ec4db352132f4b2aa080c55924da, type: 3}
+      propertyPath: OnTriggerRelease.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: Play
       objectReference: {fileID: 0}
     - target: {fileID: -3374688894382140975, guid: 5927ec4db352132f4b2aa080c55924da, type: 3}
       propertyPath: OnTriggerPull.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -69,11 +85,19 @@ PrefabInstance:
       value: ProjectileShooter, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: -3374688894382140975, guid: 5927ec4db352132f4b2aa080c55924da, type: 3}
+      propertyPath: OnTriggerRelease.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: UnityEngine.AudioSource, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: -3374688894382140975, guid: 5927ec4db352132f4b2aa080c55924da, type: 3}
       propertyPath: OnTriggerPull.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: -3374688894382140975, guid: 5927ec4db352132f4b2aa080c55924da, type: 3}
       propertyPath: OnTriggerRelease.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: -3374688894382140975, guid: 5927ec4db352132f4b2aa080c55924da, type: 3}
+      propertyPath: OnTriggerRelease.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 2528627702896536556, guid: 5927ec4db352132f4b2aa080c55924da, type: 3}
@@ -149,3 +173,8 @@ MonoBehaviour:
   fireRate: 5
   damageAmount: 10
   projectilePrefab: {fileID: 3857428276932282652, guid: 46f7bfcaa90da6980b7c79d013cfbf7b, type: 3}
+--- !u!82 &7075103866753471039 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 7869079860711814648, guid: 5927ec4db352132f4b2aa080c55924da, type: 3}
+  m_PrefabInstance: {fileID: 1088541851138205639}
+  m_PrefabAsset: {fileID: 0}

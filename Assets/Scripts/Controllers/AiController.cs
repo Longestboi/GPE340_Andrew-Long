@@ -25,16 +25,18 @@ public class AiController : Controller
     // Start is called before the first frame update
     void Start(){
         if (pawn) Possess(pawn);
+
+        GameManager.instance.playerController.playerRespawned.AddListener(UpdateTransform);
     }
 
     // Update is called once per frame
     void Update()
     {
 
-        if (!pawn || !agent || !targetTransform) return;
+        if (!pawn || !agent) return;
 
-        // Seek if the targetTransform exists.
-        if (targetTransform) DoSeek();
+        // Seek.
+        DoSeek();
         
         float distanceBetweenAiAndPlayer = Vector3.Distance(
             pawn.transform.position, targetTransform.position
@@ -76,7 +78,7 @@ public class AiController : Controller
         agent.updateRotation = false;
         
         // Make sure the rigidbody does not change our position, only use root motion and the agent
-        pawn.GetComponent<Rigidbody>().isKinematic = true;
+        // pawn.GetComponent<Rigidbody>().isKinematic = true;
     }
 
     public override void Unpossess(Pawn pawnToUnpossess)
@@ -97,6 +99,18 @@ public class AiController : Controller
     void DoSeek()
     {
         if (!agent.isOnNavMesh) return;
+        
+        // Debug.Log(GameManager.instance.playerController.pawn.isDead);
+        if (GameManager.instance.playerController.pawn.isDead)
+        {
+            agent.SetDestination(transform.position);
+            agent.isStopped = true;
+            (pawn as CharacterPawn).StopAnimator();
+            return;
+        } else {
+            agent.isStopped = false;
+        }
+
         agent.SetDestination(targetTransform.position);
 
         desiredVelocity = agent.desiredVelocity;
@@ -109,9 +123,9 @@ public class AiController : Controller
     public void DoShooting(bool isShooting)
     {
         if (!pawn.weapon) return;
-        var player = targetTransform.gameObject.GetComponent<CharacterPawn>();
+        var player = GameManager.instance.playerController.pawn as CharacterPawn;
 
-        if (player.isDead)
+        if (player.isDead || pawn.isDead)
         {
             if (pawn.weapon.GetComponent<Shooter>().IsShooting())
                 pawn.weapon.OnTriggerRelease.Invoke();
@@ -128,6 +142,11 @@ public class AiController : Controller
     public void EquipWeaponFromPrefab()
     {
 
+    }
+
+    public void UpdateTransform()
+    {
+        targetTransform = GameManager.instance.playerController.pawn.transform;
     }
     #endregion AiController
 }

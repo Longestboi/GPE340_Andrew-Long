@@ -50,6 +50,7 @@ public class Weapon : MonoBehaviour
 
         // Set the owner through the pawn
         owner = pawn.controller;
+
     }
     #endregion MonoBehaviour
 

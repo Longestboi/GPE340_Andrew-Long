@@ -86,6 +86,12 @@ public class CharacterPawn : Pawn
         animator.SetFloat("Horizontal", direction.x);
     }
 
+    public void StopAnimator()
+    {
+        animator.SetFloat("Vertical", 0);
+        animator.SetFloat("Horizontal", 0);
+    }
+
     public override void Rotate(float direction)
     {
         if (isDead) return;

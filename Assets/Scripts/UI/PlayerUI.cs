@@ -30,6 +30,7 @@ public class PlayerUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!gameManager.playerController.pawn) return;
         if (!gameManager.playerController.pawn.weapon) _currentWeaponType = WeaponType.None;
 
         if (_currentWeaponType != gameManager.playerController.pawn.weapon.weaponType)

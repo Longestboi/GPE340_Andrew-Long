@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerController : Controller
 {
@@ -24,15 +25,18 @@ public class PlayerController : Controller
     public Transform playerRespawnPoint;
 
     private bool _needsRespawn = false;
+
+    public UnityEvent playerHasDied;
+    public UnityEvent playerRespawned;
+
     #endregion
 
     #region MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (pawn) { 
+        if (pawn)
             Possess(pawn);
-        }
 
         // Set the position of the camera
         if (mainCamera && pawn)
@@ -47,6 +51,8 @@ public class PlayerController : Controller
                 cameraRotation
             );
         };
+
+        playerHasDied.AddListener(PlayerDeath);
     }
 
     // Update is called once per frame
@@ -76,12 +82,20 @@ public class PlayerController : Controller
         pawn.weapon.owner = this;
         
         // Make sure the rigidbody does not change our position, only use root motion and the agent
-        pawn.GetComponent<Rigidbody>().isKinematic = true;
+        // pawn.GetComponent<Rigidbody>().isKinematic = true;
 
         pawn.GetComponent<Health>().onDieOnce.AddListener(DecrementLife);
     }
 
-    public override void Unpossess(Pawn pawn){}
+    public override void Unpossess(Pawn pawnToUnpossess)
+    {
+        if (pawn)
+        {
+            pawn.GetComponent<Rigidbody>().isKinematic = false;
+            // pawn.controller = null;
+            pawn = null;
+        }
+    }
     #endregion Controller
 
     #region PlayerController
@@ -175,13 +189,21 @@ public class PlayerController : Controller
             pawn = Instantiate(playerPrefab.GetComponent<Pawn>(), playerRespawnPoint);
             Possess(pawn);
             _needsRespawn = false;
+            playerRespawned.Invoke();
         }
     }
 
     public void DecrementLife()
     {
+        playerHasDied.Invoke();
+        
         lives--;
         _needsRespawn = true;
+    }
+
+    public void PlayerDeath()
+    {
+        pawn.isDead = true;
     }
 
     #endregion PlayerController
